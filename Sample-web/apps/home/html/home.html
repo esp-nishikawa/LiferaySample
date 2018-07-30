@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja" ng-app="translater">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="format-detection" content="telephone=no">
+      <meta name="description" content="">
+      <meta name="author" content="">
+      <title>ホーム</title>
+      <!-- import -->
+      <link href="../../common/css/bootstrap.css" rel="stylesheet">
+      <link href="../../common/css/common.css" rel="stylesheet">
+      <link href="../css/home.css" rel="stylesheet">
+      <script src="../../common/js/jquery-1.12.1.min.js"></script>
+      <script src="../../common/js/bootstrap.min.js"></script>
+      <script src="../../common/js/common.js"></script>
+      <script src="../../common/js/request.js"></script>
+      <script src="../js/home.js"></script>
+    </head>
+    <body>
+      <div id="wrapper">
+          <div id="pageWrapper">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <h1 class="pageHeader">ホーム</h1>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-sm-5 infoList">
+                      <div class="panel panelDefault">
+                          <div class="panelHeading">
+                              <span>お知らせ</span>
+                          </div>
+                          <div class="panelBody">
+                              <table class="table">
+                                  <colgroup>
+                                      <col class="w-13">
+                                      <col class="w-17">
+                                  </colgroup>
+                                  <thead>
+                                      <tr>
+                                          <th>年月日</th>
+                                          <th>内容</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody class="informationList"></tbody>
+                              </table>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="panel panelDefault">
+                      <div class="panelHeading">
+                          <span>CSVダウンロード</span>
+                      </div>
+                      <div class="panelBody">
+                          <div class="row">
+                            <div class = "col-sm-3">
+                              <input type="button" value="ダウンロード" class="btn-block btn btn-default btnDownload"/>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </body>
+</html>

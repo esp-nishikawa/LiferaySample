@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+<Match>
+	<Class name="~.*\.*Test" />
+</Match>
+<Match>
+	<Package name="~jp\.co\.esp\.sample\.model.*" />
+</Match>
+<Match>
+	<Package name="~jp\.co\.esp\.sample\.service\.base.*" />
+</Match>
+<Match>
+	<Package name="~jp\.co\.esp\.sample\.service\.http.*" />
+</Match>
+<Match>
+	<Package name="~jp\.co\.esp\.sample\.service\.persistence.*" />
+</Match>
+<Match>
+	<Bug pattern="DMI_HARDCODED_ABSOLUTE_FILENAME, WMI_WRONG_MAP_ITERATOR" />
+</Match>
+</FindBugsFilter>

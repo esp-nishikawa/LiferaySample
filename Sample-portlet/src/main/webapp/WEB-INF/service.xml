@@ -1,0 +1,26 @@
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 6.2.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_6_2_0.dtd">
+
+<service-builder package-path="jp.co.esp.sample">
+	<author>SampleDeveloper</author>
+	<namespace>Sample</namespace>
+	<entity name="Home" local-service="true">
+	</entity>
+	<entity name="Information" local-service="false" remote-service="false" cache-enabled="false">
+		<column name="informationnumber" type="long" primary="true"></column>
+		<column name="title" type="String"></column>
+		<column name="content" type="String"></column>
+		<column name="fromdate" type="Date"></column>
+		<column name="informationlevel" type="String"></column>
+		<column name="createdat" type="Date"></column>
+		<column name="createdby" type="String"></column>
+		<column name="modifiedat" type="Date"></column>
+		<column name="modifiedby" type="String"></column>
+		<order by="desc">
+			<order-column name="fromdate" order-by="desc"
+				case-sensitive="false"></order-column>
+		</order>
+		<finder name="InformationList" return-type="Collection">
+			<finder-column name="fromdate" comparator="&lt;=" arrayable-operator="AND"></finder-column>
+		</finder>
+	</entity>
+</service-builder>

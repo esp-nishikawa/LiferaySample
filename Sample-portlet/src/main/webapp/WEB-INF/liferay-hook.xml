@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hook PUBLIC "-//Liferay//DTD Hook 6.2.0//EN" "http://www.liferay.com/dtd/liferay-hook_6_2_0.dtd">
+
+<hook>
+    <portal-properties>portal-ext.properties</portal-properties>
+    <language-properties>message/Language.properties</language-properties>
+    <servlet-filter>
+        <servlet-filter-name>LoggingFilter</servlet-filter-name>
+        <servlet-filter-impl>jp.co.esp.sample.filter.LoggingFilter</servlet-filter-impl>
+        <init-param>
+            <param-name>exclude-url-pattern</param-name>
+            <param-value></param-value>
+        </init-param>
+    </servlet-filter>
+    <servlet-filter>
+        <servlet-filter-name>ForbiddenFilter</servlet-filter-name>
+        <servlet-filter-impl>jp.co.esp.sample.filter.ForbiddenFilter</servlet-filter-impl>
+        <init-param>
+            <param-name>exclude-cmd-pattern</param-name>
+            <param-value>{&quot;/Sample-portlet*</param-value>
+        </init-param>
+    </servlet-filter>
+    <servlet-filter-mapping>
+        <servlet-filter-name>LoggingFilter</servlet-filter-name>
+        <before-filter></before-filter>
+        <url-pattern>/group/sample-privatesite/*</url-pattern>
+        <url-pattern>/web/sample-privatesite/*</url-pattern>
+        <url-pattern>/api/jsonws/*</url-pattern>
+        <url-pattern>/delegate/*</url-pattern>
+        <url-pattern>/c/portal/logout</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </servlet-filter-mapping>
+    <servlet-filter-mapping>
+        <servlet-filter-name>ForbiddenFilter</servlet-filter-name>
+        <after-filter>LoggingFilter</after-filter>
+        <url-pattern>/api/jsonws/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </servlet-filter-mapping>
+</hook>
