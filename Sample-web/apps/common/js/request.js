@@ -90,69 +90,24 @@
 
     if (this.status === 200) {
       var contentDisposition = this.getResponseHeader('Content-Disposition');
+      var fileName = decodeURI(contentDisposition);
       var blob = this.response;
-      var userAgent = window.navigator.userAgent.toLowerCase();
 
-      if (userAgent.indexOf('msie') != -1 || userAgent.indexOf('trident/7') != -1 || userAgent.indexOf('edge') != -1) {
-        ieFileDownload(contentDisposition, blob);
-      } else if (userAgent.indexOf('safari') != -1 && userAgent.indexOf('chrome') == -1 && userAgent.indexOf('android') == -1) {
-        iosFileDownload(contentDisposition, blob);
-      } else if (userAgent.indexOf('chrome') != -1 && userAgent.indexOf('android') != -1 && userAgent.substr(userAgent.indexOf('android'), 9) >= 'android 7') {
-        androidFileDownload(contentDisposition, blob);
+      if (window.navigator.msSaveBlob) { // for IE
+        window.navigator.msSaveBlob(blob, fileName);
       } else {
-        chromeFileDownload(contentDisposition, blob);
+        var blobUrl = window.URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = blobUrl;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(blobUrl);
       }
     } else {
       common.showAlertDialog(null, 'ダウンロードに失敗しました');
     }
-  }
-
-  /**
-   * Chrome用ファイルダウンロード
-   */
-  function chromeFileDownload(contentDisposition, blob) {
-    var a = document.createElement('a');
-    a.download = decodeURI(contentDisposition);
-    var blobUrl = window.URL.createObjectURL(blob);
-    a.href = blobUrl;
-    a.click();
-    window.URL.revokeObjectURL(blobUrl);
-  }
-
-  /**
-   * android用ファイルダウンロード
-   */
-  function androidFileDownload(contentDisposition, blob) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var a = document.createElement('a');
-      a.download = decodeURI(contentDisposition);
-      a.href = reader.result;
-      a.target = '_top';
-      a.click();
-    }
-    reader.readAsDataURL(blob);
-  }
-
-  /**
-   * iOS用ファイルダウンロード
-   */
-  function iosFileDownload(contentDisposition, blob) {
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      var a = document.createElement('a');
-      a.href = reader.result;
-      a.target = '_top';
-      a.click();
-    }
-    reader.readAsDataURL(blob);
-  }
-
-  /**
-   * IE用ファイルダウンロード
-   */
-  function ieFileDownload(contentDisposition, blob) {
-    window.navigator.msSaveBlob(blob, decodeURI(contentDisposition));
   }
 
 })();
