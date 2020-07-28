@@ -6,10 +6,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
- * 共通Stringユーティリティ
+ * 文字列ユーティリティ
  */
 public final class StringUtil {
 
@@ -20,27 +18,42 @@ public final class StringUtil {
 	}
 
 	/**
-	 * intに変換
-	 * <p>
-	 * NULLの場合、0に変換
-	 * </p>
+	 * nullまたは空であるかチェック
 	 *
 	 * @param value 対象文字列
+	 * @return nullまたは空の場合true
+	 */
+	public static boolean isEmpty(final String value) {
+		if (null == value || value.length() == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * nullであれば空文字列に変換
 	 *
+	 * @param value 対象文字列
+	 * @return 変換後の文字列
+	 */
+	public static String blankIfNull(final String value) {
+		if (value == null) {
+			return "";
+		}
+		return value;
+	}
+
+	/**
+	 * intに変換（nullであれば0に変換）
+	 *
+	 * @param value 対象文字列
 	 * @return int変換後値
 	 */
 	public static int toInt(final String value) {
-
-		if (null == value) {
+		if (isEmpty(value)) {
 			return 0;
 		}
-
-		final String trim = value.trim();
-		if (StringUtils.isEmpty(trim)) {
-			return 0;
-		}
-
-		return Integer.parseInt(trim);
+		return Integer.parseInt(value);
 	}
 
 	/**
@@ -52,7 +65,7 @@ public final class StringUtil {
 	 * @return 変換後日付文字列
 	 */
 	public static String convertDateFormat(final String value, final String beforeFormat, final String afterFormat) {
-		if (StringUtils.isEmpty(value)) {
+		if (isEmpty(value)) {
 			return value;
 		}
 		try {
@@ -66,57 +79,24 @@ public final class StringUtil {
 	}
 
 	/**
-	 * サニタイジング対策
-	 *
-	 * @param value 対象文字列
-	 *
-	 * @return true:形式とマッチ false:空白または、形式にマッチしない
-	 */
-	public static String toEscapeStr(String value) {
-
-		if (StringUtils.isEmpty(value)) {
-			return value;
-		}
-
-		value = value.replaceAll("&", "&amp;")
-				.replaceAll("<", "&lt;")
-				.replaceAll(">", "&gt;")
-				.replaceAll("\"", "&quot;")
-				.replaceAll("'", "&#39;");
-
-		return value;
-	}
-
-	/**
 	 * キャメルケースをハイフン区切りに変換
 	 *
 	 * @param camel キャメルケース文字列
-	 *
 	 * @return ハイフン区切り文字列
 	 */
 	public static String hiphenate(final String camel) {
-		return reverse(camel, '-');
-	}
-
-	/**
-	 * キャメルケースを指定区切りに変換
-	 *
-	 * @param camel キャメルケース文字列
-	 * @param val 区切り文字
-	 *
-	 * @return 指定区切り文字列
-	 */
-	public static String reverse(final String camel, final char val) {
-		if (Character.isUpperCase(camel.charAt(0))) {
-			return camel.toLowerCase();
+		if (isEmpty(camel)) {
+			return camel;
 		}
-
 		final StringBuilder sb = new StringBuilder();
 		final char[] characters = camel.toCharArray();
 
-		for (int i = 0, iLim = characters.length; i < iLim; i++) {
+		for (int i = 0; i < characters.length; i++) {
 			if (Character.isUpperCase(characters[i])) {
-				sb.append(val).append(Character.toLowerCase(characters[i]));
+				if (sb.length() > 0) {
+					sb.append('-');
+				}
+				sb.append(Character.toLowerCase(characters[i]));
 			} else {
 				sb.append(characters[i]);
 			}
@@ -129,28 +109,18 @@ public final class StringUtil {
 	 * ハイフン区切りをキャメルケースに変換
 	 *
 	 * @param snake ハイフン区切り文字列
-	 *
 	 * @return キャメルケース文字列
 	 */
 	public static String camelize(final String snake) {
-		return convert(snake, '-');
-	}
-
-	/**
-	 * 指定区切りをキャメルケースに変換
-	 *
-	 * @param snake 指定区切り文字列
-	 * @param val 区切り文字
-	 *
-	 * @return キャメルケース文字列
-	 */
-	public static String convert(final String snake, final char val) {
+		if (isEmpty(snake)) {
+			return snake;
+		}
 		final StringBuilder sb = new StringBuilder();
 		final char[] characters = snake.toCharArray();
 
 		boolean capitalize = false;
-		for (int i = 0, iLim = characters.length; i < iLim; i++) {
-			if (characters[i] == val) {
+		for (int i = 0; i < characters.length; i++) {
+			if (characters[i] == '-') {
 				capitalize = true;
 			} else {
 				sb.append(capitalize ? Character.toUpperCase(characters[i]) : characters[i]);
@@ -169,7 +139,7 @@ public final class StringUtil {
 	 * @return 取り出した文字列
 	 */
 	public static String left(final String value, final String delim) {
-		if (StringUtils.isEmpty(value)) {
+		if (isEmpty(value)) {
 			return value;
 		}
 		final int index = value.indexOf(delim);
@@ -187,7 +157,7 @@ public final class StringUtil {
 	 * @return 取り出した文字列
 	 */
 	public static String right(final String value, final String delim) {
-		if (StringUtils.isEmpty(value)) {
+		if (isEmpty(value)) {
 			return value;
 		}
 		final int index = value.indexOf(delim);
@@ -213,33 +183,39 @@ public final class StringUtil {
 	 *
 	 * 正規表現パターンにしたがって文字列を置換する
 	 *
-	 * @param str 元の文字列
+	 * @param value 元の文字列
 	 * @param beforRegex 置換前
 	 * @param afterRegex 置換後
 	 * @return 正規表現によって変換された文字列
 	 */
-	public static String regexConverter(final String str, final String beforRegex, final String afterRegex) {
+	public static String regexConverter(final String value, final String beforRegex, final String afterRegex) {
+		if (isEmpty(value)) {
+			return value;
+		}
 		final Pattern p = Pattern.compile(beforRegex);
-		final Matcher m = p.matcher(str);
+		final Matcher m = p.matcher(value);
 		final String result = m.replaceAll(afterRegex);
 		return result;
 	}
 
 	/**
-	 * ゼロパディング
-	 * maxlength以上の桁数の場合は、右からmaxlength桁オーバーを切り捨て
-	 *
-	 * @param num ゼロ埋め対象数値
-	 * @param maxlength ゼロ埋め後の最大桁数
-	 * @return ゼロ埋めされた文字列
+	 * 左パディング
+	 * 
+	 * @param value 対象文字列
+	 * @param padding パディング文字
+	 * @param maxLength 最大桁数
+	 * @return パディングされた文字列
 	 */
-	public static String zeroPadding(final long num, final int maxlength) {
-		final String ret = String.valueOf(num);
-		if (ret.length() == maxlength) {
-			return ret; // 0埋め不要
-		} else if (ret.length() > maxlength) {
-			return ret.substring(ret.length() - maxlength); // 桁数オーバーは右からmaxlength桁数切り出す
+	public static String leftPadding(final String value, final char padding, final int maxLength) {
+		final int paddingLength = maxLength - value.length();
+		if (paddingLength <= 0) {
+			return value; // 桁数オーバーはそのまま
 		}
-		return StringUtils.leftPad(ret, maxlength, "0");
+		final StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < paddingLength; i++) {
+			sb.append(padding);
+		}
+		sb.append(value);
+		return sb.toString();
 	}
 }
